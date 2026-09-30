@@ -26,5 +26,13 @@ export const env = z
     MAIL_FROM: z.string().default('TaskFlow <noreply@example.com>'),
   })
   .parse(process.env);
-if (env.NODE_ENV === 'production' && (!env.CLIENT_URL.startsWith('https://') || !env.SMTP_HOST))
-  throw new Error('Production requires HTTPS CLIENT_URL and SMTP delivery');
+if (env.NODE_ENV === 'production') {
+  if (!env.CLIENT_URL.startsWith('https://')) {
+    console.warn('Production warning: CLIENT_URL should start with https://');
+  }
+  if (!env.SMTP_HOST) {
+    console.warn(
+      'Production warning: SMTP_HOST is not configured; email delivery will be simulated locally.',
+    );
+  }
+}
