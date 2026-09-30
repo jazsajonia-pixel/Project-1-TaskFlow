@@ -48,7 +48,7 @@ Click **Deploy**. Vercel will:
 
 1. Run `npm run vercel-build` which generates the Prisma Client (`prisma generate`) and compiles the client frontend and server backend code.
 2. Serve the React SPA static assets from `client/dist`.
-3. Route API endpoints (`/api/*`) to the Vercel Serverless Function entrypoint (`api/index.ts`).
+3. Route API endpoints (`/api/*`) to the Vercel Serverless Function entrypoint (`api/[...path].ts`).
 
 ### 5. Run Database Migrations
 
