@@ -262,6 +262,10 @@ The default Compose mode uses HTTP for local evaluation. For a public deployment
 
 ## Deployment
 
+For detailed Vercel deployment instructions, refer to [docs/vercel-deployment.md](docs/vercel-deployment.md).
+
+### Standard Deployment
+
 1. Provision MySQL 8.4 and private object storage (or a persistent local volume for one server).
 2. Install locked dependencies with `npm ci`, generate Prisma, and run `npm run build`.
 3. Apply committed migrations once as a release job.
