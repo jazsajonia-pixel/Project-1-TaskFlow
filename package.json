@@ -21,7 +21,8 @@
     "format:check": "prettier --check .",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "vercel-build": "npm run db:generate && npm run build"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
