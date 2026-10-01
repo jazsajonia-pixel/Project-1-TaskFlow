@@ -2,7 +2,7 @@
 
 **Manage projects. Empower teams.**
 
-A full-stack collaboration platform with a responsive React interface, an Express API, MySQL persistence, and live Socket.IO updates. Built as a professional portfolio project with real authentication, workspace permissions, private attachments, meaningful integration tests, and deployment configuration.
+A full-stack collaboration platform with a responsive React interface, an Express API, PostgreSQL (Neon) persistence, and live Socket.IO updates. Built as a professional portfolio project with real authentication, workspace permissions, private attachments, meaningful integration tests, and deployment configuration.
 
 ## Features
 
@@ -31,10 +31,10 @@ A full-stack collaboration platform with a responsive React interface, an Expres
 | UI state and forms | React Router, TanStack Query, Zustand, React Hook Form, Zod                            |
 | Interaction        | dnd-kit, Lucide, Recharts, Sonner                                                      |
 | API                | Node.js 24, Express 5, TypeScript, Socket.IO, Zod                                      |
-| Data               | MySQL 8.4, Prisma 6, versioned SQL migrations                                          |
+| Data               | PostgreSQL (Neon), Prisma 6, versioned SQL migrations                                  |
 | Security           | bcrypt, opaque database sessions, Helmet, CORS, rate limits, origin checks             |
 | Storage            | Local development storage, private S3 / Cloudflare R2, authenticated Cloudinary assets |
-| Tests              | Vitest, React Testing Library, Supertest, real MySQL and Socket.IO integration         |
+| Tests              | Vitest, React Testing Library, Supertest, real PostgreSQL and Socket.IO integration    |
 | Tooling            | npm workspaces, ESLint, Prettier, Docker Compose, GitHub Actions                       |
 
 ## Architecture
@@ -69,7 +69,7 @@ flowchart LR
   Routes --> Controllers[Validated controllers]
   Controllers --> Services[Authorized services]
   Services --> Prisma[Prisma]
-  Prisma --> MySQL[(MySQL)]
+  Prisma --> PostgreSQL[(PostgreSQL / Neon)]
   Services --> Rooms[Socket.IO rooms]
   Rooms --> UI
   Services --> Storage[Private storage adapter]
@@ -110,7 +110,7 @@ The public landing page includes an explicitly labeled illustrative product prev
 
 ## Local installation
 
-Requirements: Node.js 24, npm 11, Docker Compose (or an existing MySQL 8 database).
+Requirements: Node.js 24, npm 11, Docker Compose (or an existing PostgreSQL database / Neon project).
 
 ```bash
 git clone https://github.com/jazsajonia-pixel/Project-1-TaskFlow.git
@@ -121,12 +121,12 @@ cp .env.example .env
 
 Edit `.env` before starting:
 
-1. Choose strong `MYSQL_PASSWORD` and `MYSQL_ROOT_PASSWORD` values. Use URL-safe values or percent-encode credentials in `DATABASE_URL`.
-2. Set `DATABASE_URL` to your MySQL connection string.
+1. Choose a strong `POSTGRES_PASSWORD` value. Use URL-safe values or percent-encode credentials in `DATABASE_URL`.
+2. Set `DATABASE_URL` to your PostgreSQL or Neon connection string (e.g. `postgresql://user:password@ep-xyz.region.aws.neon.tech/neondb?sslmode=require`).
 3. Keep `CLIENT_URL=http://localhost:5173` and `SERVER_URL=http://localhost:4000` for Vite development.
 
 ```bash
-docker compose up -d mysql
+docker compose up -d postgres
 npm run db:generate
 npm run db:migrate
 npm run dev
@@ -170,7 +170,7 @@ See [`.env.example`](.env.example) for the full list.
 
 | Variable                      | Purpose                                                                                    |
 | ----------------------------- | ------------------------------------------------------------------------------------------ |
-| `DATABASE_URL`                | Prisma MySQL connection string                                                             |
+| `DATABASE_URL`                | Prisma PostgreSQL / Neon connection string                                                 |
 | `NODE_ENV`, `PORT`            | Runtime mode and API port                                                                  |
 | `CLIENT_URL`                  | Exact browser origin; used for CORS, mutation origin checks, sockets, and email links      |
 | `SERVER_URL`                  | Deployment API address                                                                     |
@@ -209,7 +209,7 @@ npm run test:integration
 npm run build
 ```
 
-To run integration tests locally, create a separate MySQL database named `taskflow_test` and grant your development database user access. Copy `.env` to `.env.test`, change `DATABASE_URL` to that database, set `NODE_ENV=test`, and use `UPLOAD_DIR=./uploads/test`.
+To run integration tests locally, create a separate PostgreSQL database named `taskflow_test` and grant your development database user access. Copy `.env` to `.env.test`, change `DATABASE_URL` to that database, set `NODE_ENV=test`, and use `UPLOAD_DIR=./uploads/test`.
 
 ```bash
 node --env-file=.env.test node_modules/prisma/build/index.js migrate deploy
@@ -230,7 +230,7 @@ Coverage includes:
 - Database-derived analytics, notification ownership, pagination limits, and OpenAPI availability
 - Real Socket.IO connections, authorized rooms, update broadcasts, and presence
 
-Frontend tests mock the HTTP boundary. Backend integration tests use real MySQL and Socket.IO; they do not substitute an in-memory database. External storage providers and real SMTP delivery require their own deployment credentials and provider smoke checks.
+Frontend tests mock the HTTP boundary. Backend integration tests use real PostgreSQL and Socket.IO; they do not substitute an in-memory database. External storage providers and real SMTP delivery require their own deployment credentials and provider smoke checks.
 
 ## API documentation
 
@@ -256,7 +256,7 @@ For the complete stack:
 docker compose up --build
 ```
 
-Open **http://localhost:8080**. Compose waits for MySQL, runs migrations, starts the API, then serves the client through Nginx. MySQL and local uploads use named volumes. `docker compose down` preserves those volumes; `docker compose down -v` deletes them.
+Open **http://localhost:8080**. Compose waits for PostgreSQL, runs migrations, starts the API, then serves the client through Nginx. PostgreSQL and local uploads use named volumes. `docker compose down` preserves those volumes; `docker compose down -v` deletes them.
 
 The default Compose mode uses HTTP for local evaluation. For a public deployment, terminate TLS, set `COMPOSE_NODE_ENV=production`, set `COMPOSE_CLIENT_URL` to the HTTPS origin, and configure SMTP. The production runtime refuses to start without an HTTPS client URL and SMTP host.
 
@@ -266,7 +266,7 @@ For detailed Vercel deployment instructions, refer to [docs/vercel-deployment.md
 
 ### Standard Deployment
 
-1. Provision MySQL 8.4 and private object storage (or a persistent local volume for one server).
+1. Provision PostgreSQL / Neon and private object storage (or a persistent local volume for one server).
 2. Install locked dependencies with `npm ci`, generate Prisma, and run `npm run build`.
 3. Apply committed migrations once as a release job.
 4. Run `node server/dist/server/src/index.js` with environment variables supplied by your platform.

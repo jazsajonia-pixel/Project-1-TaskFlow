@@ -8,19 +8,19 @@ jobs:
   verify:
     runs-on: ubuntu-latest
     services:
-      mysql:
-        image: mysql:8.4
+      postgres:
+        image: postgres:16-alpine
         env:
-          MYSQL_DATABASE: taskflow_test
-          MYSQL_ROOT_PASSWORD: ci-isolated-password
-        ports: ['3306:3306']
+          POSTGRES_DB: taskflow_test
+          POSTGRES_PASSWORD: ci-isolated-password
+        ports: ['5432:5432']
         options: >-
-          --health-cmd="mysqladmin ping --silent"
+          --health-cmd="pg_isready -U postgres -d taskflow_test"
           --health-interval=5s
           --health-timeout=5s
           --health-retries=30
     env:
-      DATABASE_URL: mysql://root:ci-isolated-password@127.0.0.1:3306/taskflow_test
+      DATABASE_URL: postgresql://postgres:ci-isolated-password@127.0.0.1:5432/taskflow_test
       CLIENT_URL: http://localhost:5173
       SERVER_URL: http://localhost:4000
       NODE_ENV: test
