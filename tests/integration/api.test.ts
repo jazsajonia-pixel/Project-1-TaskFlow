@@ -224,7 +224,7 @@ describe('authorization, data integrity, and collaboration', () => {
       (await post(`/projects/${projectId}/tasks`, { title: 'Viewer task' }, 'viewer')).status,
     ).toBe(403);
   });
-  it('creates tasks and stores status, ordering, labels, subtasks, and assignments in MySQL', async () => {
+  it('creates tasks and stores status, ordering, labels, subtasks, and assignments in PostgreSQL', async () => {
     const label = await post(
       `/projects/${projectId}/labels`,
       { name: 'Backend', color: '#635bff' },

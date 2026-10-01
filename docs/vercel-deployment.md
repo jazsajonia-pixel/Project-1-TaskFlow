@@ -5,7 +5,7 @@ This guide provides step-by-step instructions for deploying TaskFlow to [Vercel]
 ## Prerequisites
 
 1. A [Vercel account](https://vercel.com/signup).
-2. A hosted MySQL 8 database compatible with Prisma (e.g., PlanetScale, Supabase, Railway, Aiven, or AWS RDS).
+2. A hosted PostgreSQL database compatible with Prisma, such as Neon (or Supabase, Railway, Aiven, or AWS RDS PostgreSQL).
 3. (Optional) Cloud storage credentials (e.g., AWS S3, Cloudflare R2, or Cloudinary) for task attachment uploads.
 4. (Optional) SMTP provider credentials (e.g., SendGrid, Resend, Mailgun) for transactional emails.
 
@@ -27,12 +27,12 @@ Ensure your TaskFlow code is pushed to your Git provider repository.
 
 In the Vercel project setup or Settings > Environment Variables, add the following required environment variables:
 
-| Environment Variable | Description                    | Example Value                              |
-| -------------------- | ------------------------------ | ------------------------------------------ |
-| `DATABASE_URL`       | Prisma MySQL connection string | `mysql://user:password@host:3306/taskflow` |
-| `CLIENT_URL`         | Production application URL     | `https://your-app.vercel.app`              |
-| `SERVER_URL`         | Production application API URL | `https://your-app.vercel.app`              |
-| `NODE_ENV`           | Production environment mode    | `production`                               |
+| Environment Variable | Description                                | Example Value                                                                   |
+| -------------------- | ------------------------------------------ | ------------------------------------------------------------------------------- |
+| `DATABASE_URL`       | Prisma PostgreSQL / Neon connection string | `postgresql://user:password@ep-xyz.region.aws.neon.tech/neondb?sslmode=require` |
+| `CLIENT_URL`         | Production application URL                 | `https://your-app.vercel.app`                                                   |
+| `SERVER_URL`         | Production application API URL             | `https://your-app.vercel.app`                                                   |
+| `NODE_ENV`           | Production environment mode                | `production`                                                                    |
 
 #### Optional / Additional Environment Variables
 
@@ -55,7 +55,7 @@ Click **Deploy**. Vercel will:
 Before using the app, ensure database schema migrations have been applied to your production database. Run from your local terminal pointing to your production database URL:
 
 ```bash
-DATABASE_URL="mysql://user:password@host:3306/taskflow" npm run db:migrate
+DATABASE_URL="postgresql://user:password@ep-xyz.region.aws.neon.tech/neondb?sslmode=require" npm run db:migrate
 ```
 
 ## Serverless Considerations & Limitations
