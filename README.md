@@ -1,8 +1,8 @@
 # TaskFlow
 
-**Manage projects. Empower teams.**
+A full-stack team workspace for organizing projects, tasks, and day-to-day collaboration. TaskFlow combines a responsive React interface, an Express API, PostgreSQL (Neon) persistence, and live Socket.IO updates.
 
-A full-stack collaboration platform with a responsive React interface, an Express API, PostgreSQL (Neon) persistence, and live Socket.IO updates. Built as a professional portfolio project with real authentication, workspace permissions, private attachments, meaningful integration tests, and deployment configuration.
+The implementation includes account authentication, workspace roles, private attachments, integration tests, and deployment configuration. This README documents the current behavior and local development setup.
 
 ## Features
 
