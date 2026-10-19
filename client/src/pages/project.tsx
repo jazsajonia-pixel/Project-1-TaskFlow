@@ -170,21 +170,39 @@ export default function ProjectPage() {
           </div>
           {tasks.isPending ? (
             <Loading />
-          ) : tasks.error ? (
+          ) : tasks.error && !tasks.data ? (
             <ErrorState error={tasks.error} retry={() => void tasks.refetch()} />
-          ) : tab === 'Board' ? (
-            <Kanban tasks={items} canWrite={canWrite} onOpen={openTask} onCreate={setCreate} />
-          ) : items.length ? (
-            <div className="panel">
-              <TaskList tasks={items} onOpen={(task) => openTask(task.id)} />
-            </div>
           ) : (
-            <Empty
-              title="A clean slate"
-              description="Create a task or try changing your filters."
-            />
+            <>
+              {tab === 'Board' ? (
+                <Kanban tasks={items} canWrite={canWrite} onOpen={openTask} onCreate={setCreate} />
+              ) : items.length ? (
+                <div className="panel">
+                  <TaskList tasks={items} onOpen={(task) => openTask(task.id)} />
+                </div>
+              ) : (
+                <Empty
+                  title="A clean slate"
+                  description="Create a task or try changing your filters."
+                />
+              )}
+              {tasks.error && (
+                <div className="notice" role="alert">
+                  Couldn’t load more tasks. Your loaded tasks are still available.{' '}
+                  <button
+                    className="text-link"
+                    disabled={tasks.isFetchingNextPage}
+                    onClick={() =>
+                      void (tasks.isFetchNextPageError ? tasks.fetchNextPage() : tasks.refetch())
+                    }
+                  >
+                    {tasks.isFetchingNextPage ? 'Trying again…' : 'Try again'}
+                  </button>
+                </div>
+              )}
+            </>
           )}
-          {tasks.hasNextPage && (
+          {tasks.hasNextPage && !tasks.error && (
             <div className="load-more">
               <Button
                 variant="outline"
