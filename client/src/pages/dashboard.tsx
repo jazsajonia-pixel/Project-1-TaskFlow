@@ -108,7 +108,7 @@ export default function Dashboard() {
           {projects.isPending ? (
             <Loading compact />
           ) : projects.error ? (
-            <ErrorState error={projects.error} />
+            <ErrorState error={projects.error} retry={() => void projects.refetch()} />
           ) : projects.data.items.length ? (
             <div className="project-grid">
               {projects.data.items.map((p) => (
