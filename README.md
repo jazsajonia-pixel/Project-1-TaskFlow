@@ -262,6 +262,8 @@ The default Compose mode uses HTTP for local evaluation. For a public deployment
 
 ## Deployment
 
+**Hosted deployment status (2026-11-01):** The published Vercel health endpoint (`https://project-1-taskflow-chi.vercel.app/api/health`) returned HTTP 500 when checked on this date. The hosted application is therefore not currently verified as operational. This observation does not establish the current runtime root cause; review and configure the required production environment variables and database before treating the deployment as ready.
+
 For detailed Vercel deployment instructions, refer to [docs/vercel-deployment.md](docs/vercel-deployment.md).
 
 ### Standard Deployment
